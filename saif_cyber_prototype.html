@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07110d">
+<title>SAIF CYBER | الأمن السيبراني — SEIF AL v2</title>
+<style>
+:root{--bg:#070d0b;--panel:#0d1712;--panel2:#101f17;--line:#1d3828;--green:#39f58a;--green2:#a0ffc2;--muted:#9aafa2;--text:#effff4;--shadow:0 18px 60px #0008}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 80% -10%,#123b24 0,transparent 34%),radial-gradient(ellipse at 0 35%,#0b2417 0,transparent 30%),var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;min-height:100vh}
+button,a{font:inherit}.wrap{width:min(1160px,calc(100% - 36px));margin:auto}
+header{position:sticky;top:0;z-index:10;background:#07110de8;backdrop-filter:blur(16px);border-bottom:1px solid #183323}
+.nav{height:76px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text);font-weight:900;letter-spacing:1.5px}.logo{width:42px;height:42px;border:1px solid #3af58a88;border-radius:13px;display:grid;place-items:center;background:linear-gradient(145deg,#153c25,#09140e);color:var(--green);font-size:22px;box-shadow:0 0 24px #39f58a20}.brand small{display:block;font-size:9px;color:var(--muted);letter-spacing:2px;margin-top:3px}.navlinks{display:flex;align-items:center;gap:22px}.navlinks a{color:#b7c9bd;text-decoration:none;font-size:13px}.navlinks a:hover{color:var(--green)}.navbtn{border:1px solid #39f58a88;background:#102619;color:var(--green2);padding:11px 17px;border-radius:10px;cursor:pointer;font-weight:bold}
+.hero{padding:86px 0 58px;display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}.eyebrow{display:inline-flex;align-items:center;gap:9px;color:var(--green2);font-size:12px;border:1px solid #39f58a44;background:#0c2115;padding:9px 13px;border-radius:999px}.pulse{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 12px var(--green)}h1{font-size:clamp(38px,6vw,68px);line-height:1.15;margin:22px 0 16px;letter-spacing:-1.5px}h1 span{color:var(--green);text-shadow:0 0 30px #39f58a36}.lead{font-size:16px;line-height:2;color:#aebfb4;max-width:590px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.primary,.secondary{padding:14px 21px;border-radius:11px;text-decoration:none;font-weight:bold;cursor:pointer}.primary{background:var(--green);color:#06130b;border:1px solid var(--green);box-shadow:0 8px 30px #39f58a24}.secondary{border:1px solid #31553d;color:var(--text);background:#0c1710}.terminal{border:1px solid #285237;background:linear-gradient(145deg,#102218,#09120d);border-radius:20px;padding:22px;box-shadow:var(--shadow);position:relative;overflow:hidden}.terminal:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 28px,#39f58a08 29px 30px);pointer-events:none}.termhead{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #25422e;padding-bottom:15px;color:#a9c0b0;font-size:12px}.dots{display:flex;gap:6px}.dots i{width:7px;height:7px;border-radius:50%;background:#315a3d}.termcontent{position:relative;padding:23px 2px 5px;font-family:Consolas,monospace;direction:ltr;text-align:left;color:#8fffb3;font-size:13px;line-height:2}.termcontent .dim{color:#72917b}.termcontent .bright{color:#effff4}.termfoot{position:relative;border-top:1px solid #25422e;padding-top:13px;margin-top:17px;display:flex;justify-content:space-between;color:#89a591;font-size:11px}
+.section{padding:54px 0}.sectionhead{text-align:center;margin-bottom:30px}.kicker{color:var(--green);font-size:11px;letter-spacing:2px;font-weight:bold}.section h2{font-size:30px;margin:10px 0}.sectionhead p{color:var(--muted);line-height:1.8;margin:0}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.card{background:linear-gradient(150deg,#102017,#0a130e);border:1px solid #1d3a28;border-radius:16px;padding:21px;min-height:210px;transition:.2s;cursor:pointer}.card:hover{transform:translateY(-5px);border-color:#39f58a88;box-shadow:0 12px 35px #0005}.ico{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;background:#143322;border:1px solid #28623d;color:var(--green);font-size:22px}.card h3{font-size:17px;margin:17px 0 8px}.card p{color:#9fb2a5;font-size:12px;line-height:1.9;margin:0}.more{display:inline-block;margin-top:16px;color:var(--green2);font-size:12px}
+.about{display:grid;grid-template-columns:1fr 1fr;gap:20px}.aboutbox{padding:25px;border-radius:17px;border:1px solid #1d3a28;background:#0d1811}.aboutbox h3{margin-top:0}.aboutbox p,.aboutbox li{color:#a9bcb0;line-height:2;font-size:13px}.aboutbox ul{padding-right:18px}
+footer{border-top:1px solid #1b3324;margin-top:50px;padding:25px 0;color:#81988a;font-size:12px}.foot{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.bot-launch{position:fixed;bottom:24px;left:22px;z-index:20;width:70px;height:70px;border:1px solid #62ffa0;background:radial-gradient(circle at 35% 25%,#1e5433,#0b1b11 72%);color:var(--green);border-radius:24px;box-shadow:0 8px 35px #39f58a38,0 0 0 5px #39f58a0d;cursor:pointer;font-size:34px;display:grid;place-items:center;animation:botFloat 2.8s ease-in-out infinite;transition:transform .2s,box-shadow .2s}.bot-launch:before,.bot-launch:after{content:"";position:absolute;border:1px solid #39f58a77;border-radius:50%;inset:-6px;animation:botOrbit 4s linear infinite}.bot-launch:after{inset:-11px;border-color:#39f58a30;animation-duration:6s;animation-direction:reverse}.bot-face{position:relative;z-index:1;display:grid;place-items:center;width:48px;height:43px;border-radius:14px;background:linear-gradient(145deg,#d8ffe5,#66f59a);color:#092013;font-size:28px;box-shadow:inset 0 -4px 0 #2aa65a}.bot-launch:hover{transform:scale(1.08) rotate(-5deg);box-shadow:0 12px 40px #39f58a60,0 0 0 7px #39f58a12}.bot-launch:active{transform:scale(.94)}@keyframes botFloat{0%,100%{translate:0 0;rotate:-2deg}50%{translate:0 -12px;rotate:2deg}}@keyframes botOrbit{from{transform:rotate(0deg) scale(.96)}to{transform:rotate(360deg) scale(.96)}}.bot-panel{position:fixed;left:22px;bottom:94px;width:min(360px,calc(100vw - 30px));height:440px;background:#0b1510;border:1px solid #2a5939;border-radius:18px;z-index:19;box-shadow:var(--shadow);display:none;overflow:hidden}.bot-panel.open{display:flex;flex-direction:column}.bothead{padding:15px;background:#10251a;border-bottom:1px solid #25452f;display:flex;justify-content:space-between;align-items:center}.bothead strong{color:var(--green2)}.bothead small{display:block;color:#8ca996;margin-top:4px}.close{background:none;border:0;color:#c5d8ca;font-size:22px;cursor:pointer}.messages{padding:14px;display:flex;flex-direction:column;gap:10px;overflow:auto;flex:1}.msg{padding:11px 13px;border-radius:13px;font-size:12px;line-height:1.8;max-width:90%}.botmsg{background:#14271b;border:1px solid #254831;align-self:flex-start}.usermsg{background:#16452a;color:#eafff0;align-self:flex-end}.botform{display:flex;gap:8px;padding:12px;border-top:1px solid #203b2a}.botform input{min-width:0;flex:1;background:#101e15;border:1px solid #2a4833;border-radius:9px;padding:11px;color:white;outline:none}.botform button{background:var(--green);border:0;border-radius:9px;padding:0 14px;font-weight:bold;cursor:pointer}
+
+/* SEIF AL animated character */
+.bot-launch{width:82px;height:94px;bottom:20px;left:20px;border:0;border-radius:22px;background:transparent;box-shadow:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;animation:seifHover 2.5s ease-in-out infinite;overflow:visible;padding:0}
+.bot-launch:before{inset:5px 7px 20px;border:1px solid #39f58a55;border-radius:22px;background:radial-gradient(ellipse at center,#123c23bb,#07110d22 72%);box-shadow:0 0 24px #39f58a24;animation:seifAura 3s ease-in-out infinite}
+.bot-launch:after{inset:0 0 14px;border:1px dashed #39f58a66;border-radius:25px;animation:seifSpin 12s linear infinite}
+.robot-character{position:relative;z-index:2;width:58px;height:66px;display:block;filter:drop-shadow(0 4px 8px #39f58a55)}
+.robot-head{position:absolute;top:12px;left:7px;width:44px;height:34px;border:2px solid #a0ffc2;border-radius:13px 13px 11px 11px;background:linear-gradient(145deg,#e3ffeb,#6df5a0 70%,#29b765);box-shadow:inset 0 -4px 0 #239451,0 0 14px #39f58a66;display:flex;align-items:center;justify-content:center;gap:9px}
+.robot-antenna{position:absolute;top:1px;left:27px;width:3px;height:13px;background:#8dffb3;border-radius:4px}
+.robot-antenna:before{content:"";position:absolute;width:8px;height:8px;left:-2.5px;top:-5px;border-radius:50%;background:#c8ffda;box-shadow:0 0 9px #39f58a}
+.robot-eye{width:6px;height:9px;border-radius:50%;background:#092817;display:block;animation:seifBlink 4.5s infinite}
+.robot-mouth{position:absolute;bottom:6px;left:17px;width:10px;height:4px;border-bottom:2px solid #0c4928;border-radius:0 0 8px 8px}
+.robot-neck{position:absolute;top:46px;left:25px;width:9px;height:5px;background:#5ce88b;border-radius:2px}
+.robot-body{position:absolute;top:50px;left:13px;width:32px;height:15px;border:2px solid #8cffb0;border-radius:7px 7px 9px 9px;background:linear-gradient(90deg,#176333,#36d875);display:flex;align-items:center;justify-content:center;gap:3px}
+.robot-body i{width:3px;height:3px;border-radius:50%;background:#d9ffe4;box-shadow:0 0 4px #fff}
+.robot-arm{position:absolute;top:49px;width:7px;height:14px;border:2px solid #6df5a0;border-radius:6px;background:#164a2a}
+.robot-arm.left{left:5px;transform:rotate(18deg)}.robot-arm.right{right:5px;transform:rotate(-18deg)}
+.bot-name-tag{position:relative;z-index:3;color:#baffce;font-size:9px;line-height:14px;letter-spacing:1.4px;font-weight:900;text-shadow:0 0 8px #39f58a}
+@keyframes seifHover{0%,100%{translate:0 0;rotate:-2deg}50%{translate:0 -9px;rotate:2deg}}
+@keyframes seifAura{0%,100%{opacity:.45;transform:scale(.94)}50%{opacity:1;transform:scale(1.06)}}
+@keyframes seifSpin{to{transform:rotate(360deg)}}
+@keyframes seifBlink{0%,44%,48%,100%{transform:scaleY(1)}46%{transform:scaleY(.12)}}
+.bot-launch:hover{transform:scale(1.08);box-shadow:none}.bot-launch:active{transform:scale(.95)}
+@media(max-width:480px){.bot-launch{width:76px;height:88px;bottom:13px;left:12px}.robot-character{transform:scale(.94)}}
+
+@media(max-width:850px){.hero{grid-template-columns:1fr;padding-top:55px}.cards{grid-template-columns:repeat(2,1fr)}.navlinks{display:none}.about{grid-template-columns:1fr}}
+@media(max-width:480px){.wrap{width:min(100% - 26px,1160px)}.nav{height:66px}.hero{padding:45px 0 35px;gap:28px}.cards{grid-template-columns:1fr}.card{min-height:0}.section{padding:38px 0}.section h2{font-size:25px}.terminal{padding:16px}.bot-launch{width:62px;height:62px;bottom:15px;left:15px}.bot-face{width:43px;height:39px;font-size:25px}.bot-panel{left:15px;bottom:80px;height:420px}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav">
+<a class="brand" href="#"><span class="logo">⌘</span><span>SAIF CYBER<small>ETHICAL HACKING & SECURITY</small></span></a>
+<nav class="navlinks"><a href="#home">الرئيسية</a><a href="#fields">المجالات</a><a href="#about">عن المنصة</a></nav>
+<button class="navbtn" onclick="alert('سيتم تفعيل إنشاء الحساب وتسجيل الدخول في المرحلة التالية.')">إنشاء حساب</button>
+</div></header>
+<main id="home" class="wrap">
+<section class="hero">
+<div>
+<div class="eyebrow"><span class="pulse"></span> منصة تعليمية للأمن السيبراني</div>
+<h1>اكتشف العالم الرقمي<br><span>بعقلية أمنية</span></h1>
+<p class="lead">مساحتك لتعلّم الأمن السيبراني والهكر الأخلاقي، وفهم المخاطر الرقمية، وتطوير مهاراتك في البرمجة والحماية — بطريقة مسؤولة وآمنة.</p>
+<div class="actions"><a class="primary" href="#fields">استكشف المجالات <span>←</span></a><button class="secondary" onclick="toggleBot(true)">اسأل SEIF AL</button></div>
+</div>
+<div class="terminal">
+<div class="termhead"><span>SAIF_TERMINAL / OVERVIEW</span><span class="dots"><i></i><i></i><i></i></span></div>
+<div class="termcontent"><div class="dim">$ initialize_saif_cyber</div><div class="bright">Loading learning environment...</div><div>[<span style="color:#39f58a">OK</span>] Security awareness</div><div>[<span style="color:#39f58a">OK</span>] Ethical learning paths</div><div>[<span style="color:#39f58a">OK</span>] AI assistant interface</div><br><div class="bright">Welcome to SAIF CYBER_</div><div class="dim">Learn ethically. Build securely.</div></div>
+<div class="termfoot"><span>● SYSTEM READY</span><span>VERSION 1.0 / CONCEPT</span></div>
+</div>
+</section>
+<section id="fields" class="section">
+<div class="sectionhead"><div class="kicker">LEARNING PATHS</div><h2>اختر مجال رحلتك</h2><p>أربع بوابات معرفية تساعدك على بناء فهم أعمق للعالم الرقمي.</p></div>
+<div class="cards">
+<article class="card" onclick="showInfo('مجال واتساب','توعية بحماية حسابات واتساب، والتعامل مع البلاغات الكيدية والاحتيال، والتحقق من الادعاءات حول الثغرات، واستخدام قنوات الدعم الرسمية.')"><div class="ico">◉</div><h3>مجال واتساب</h3><p>وعي رقمي، حماية الحسابات، فهم البلاغات الكيدية، والتعامل الآمن مع محاولات الاحتيال.</p><span class="more">استكشف المجال ←</span></article>
+<article class="card" onclick="showInfo('أمن الشركات','مبادئ اكتشاف الثغرات ومعالجتها داخل أنظمة تملكها أو لديك تصريح واضح لاختبارها، مع التركيز على التوثيق والإصلاح.')"><div class="ico">⌑</div><h3>أمن الشركات</h3><p>تعلّم مبادئ اكتشاف الثغرات والإبلاغ المسؤول عنها ومعالجتها ضمن نطاق مصرح به.</p><span class="more">استكشف المجال ←</span></article>
+<article class="card" onclick="showInfo('بوابة الكورسات','مسارات تعليمية في البرمجة، والشبكات، وأنظمة التشغيل، وأساسيات الأمن السيبراني.')"><div class="ico">⌘</div><h3>بوابة الكورسات</h3><p>مسارات لتعلّم البرمجة والشبكات وأنظمة التشغيل وأساسيات الأمن السيبراني.</p><span class="more">استكشف المجال ←</span></article>
+<article class="card" onclick="showInfo('التوعيات الأمنية','مقالات وإرشادات مبسطة عن كلمات المرور، والتصيد، والخصوصية، وحماية الأجهزة والبيانات.')"><div class="ico">⛨</div><h3>التوعيات الأمنية</h3><p>معلومات ونصائح عملية تساعدك على حماية نفسك وبياناتك أثناء استخدام الإنترنت.</p><span class="more">استكشف المجال ←</span></article>
+</div>
+</section>
+<section id="about" class="section">
+<div class="sectionhead"><div class="kicker">OUR PRINCIPLES</div><h2>المعرفة مسؤولية</h2><p>نتعلّم لنحمي ونبني، وليس للإضرار بالآخرين.</p></div>
+<div class="about">
+<div class="aboutbox"><h3>رؤيتنا</h3><p>تقديم محتوى عربي مبسط يساعد المتعلمين على فهم الأمن السيبراني، وتنمية التفكير التحليلي، واكتساب مهارات تقنية مسؤولة.</p></div>
+<div class="aboutbox"><h3>قواعدنا</h3><ul><li>التعلّم والتجربة داخل بيئات آمنة ومصرح بها.</li><li>احترام خصوصية الآخرين وبياناتهم.</li><li>التحقق من المعلومات قبل نشرها.</li><li>الإبلاغ المسؤول عن الثغرات الأمنية.</li></ul></div>
+</div>
+</section>
+</main>
+<footer><div class="wrap foot"><span>© 2026 SAIF CYBER — جميع الحقوق محفوظة</span><span>Built for learning • Designed for security</span></div></footer>
+<button class="bot-launch" aria-label="افتح مساعد SEIF AL" title="اسأل SEIF AL" onclick="toggleBot()">
+  <span class="robot-character" aria-hidden="true">
+    <span class="robot-antenna"></span>
+    <span class="robot-head"><i class="robot-eye"></i><i class="robot-eye"></i><b class="robot-mouth"></b></span>
+    <span class="robot-neck"></span>
+    <span class="robot-body"><i></i><i></i><i></i></span>
+    <span class="robot-arm left"></span><span class="robot-arm right"></span>
+  </span>
+  <span class="bot-name-tag">SEIF AL</span>
+</button>
+<div class="bot-panel" id="botPanel">
+<div class="bothead"><div><strong>SEIF AL</strong><small>مساعد المنصة الذكي — نسخة تجريبية</small></div><button class="close" onclick="toggleBot(false)">×</button></div>
+<div class="messages" id="messages"><div class="msg botmsg">أهلاً بك! أنا SEIF AL. اسألني عن أقسام المنصة أو أساسيات الأمن السيبراني. هذه نسخة واجهة تجريبية، وسيتم ربطها بقاعدة المعرفة والذكاء الاصطناعي لاحقاً.</div></div>
+<form class="botform" onsubmit="sendMessage(event)"><input id="botInput" placeholder="اكتب سؤالك هنا..." autocomplete="off"><button type="submit">إرسال</button></form>
+</div>
+<script>
+function toggleBot(force){const p=document.getElementById('botPanel');if(typeof force==='boolean')p.classList.toggle('open',force);else p.classList.toggle('open')}
+function addMsg(text,cls){const d=document.createElement('div');d.className='msg '+cls;d.textContent=text;const m=document.getElementById('messages');m.appendChild(d);m.scrollTop=m.scrollHeight}
+function sendMessage(e){e.preventDefault();const i=document.getElementById('botInput');const q=i.value.trim();if(!q)return;addMsg(q,'usermsg');i.value='';setTimeout(()=>addMsg('وصل سؤالك! في النسخة النهائية سأجيب اعتماداً على قاعدة المعرفة التي يضيفها مدير المنصة. حالياً هذه واجهة تجريبية وليست متصلة بخدمة ذكاء اصطناعي.','botmsg'),350)}
+function showInfo(title,body){addMsg('أريد معرفة المزيد عن: '+title,'usermsg');toggleBot(true);addMsg(body,'botmsg')}
+</script>
+</body></html>
