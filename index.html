@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#07110d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SAIF CYBER">
+<meta name="application-name" content="SAIF CYBER">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
 <title>SAIF CYBER | الأمن السيبراني — SEIF AL v2</title>
 <style>
 :root{--bg:#070d0b;--panel:#0d1712;--panel2:#101f17;--line:#1d3828;--green:#39f58a;--green2:#a0ffc2;--muted:#9aafa2;--text:#effff4;--shadow:0 18px 60px #0008}
@@ -58,13 +66,348 @@ footer{border-top:1px solid #1b3324;margin-top:50px;padding:25px 0;color:#81988a
 @media(max-width:480px){.bot-launch{width:76px;height:88px;bottom:13px;left:12px}.bot-launch.is-chatting .robot-character{transform:scale(1.2) translateY(-4px)}}
 @media(prefers-reduced-motion:reduce){.bot-launch,.bot-launch:before,.bot-launch:after,.robot-arm.right{animation:none!important}}
 
+
+/* Account access */
+.auth-overlay{position:fixed;inset:0;z-index:50;background:#020805d9;backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:16px}
+.auth-overlay.show{display:flex}
+.auth-box{width:min(440px,100%);max-height:92vh;overflow:auto;background:linear-gradient(150deg,#102017,#09120d);border:1px solid #39f58a66;border-radius:20px;padding:22px;box-shadow:0 20px 70px #000b;position:relative}
+.auth-close{position:absolute;left:16px;top:12px;background:none;border:0;color:#c5d8ca;font-size:26px;cursor:pointer}
+.auth-box h2{margin:4px 0 8px;color:var(--green2);font-size:23px}
+.auth-sub{color:var(--muted);font-size:12px;line-height:1.8;margin:0 0 17px}
+.auth-tabs{display:flex;gap:8px;margin:15px 0}
+.auth-tabs button{flex:1;padding:10px;border:1px solid #31553d;background:#0b1710;color:#b7c9bd;border-radius:9px;cursor:pointer}
+.auth-tabs button.active{background:#153b24;color:var(--green2);border-color:#39f58a}
+.auth-form{display:none;gap:10px;flex-direction:column}
+.auth-form.active{display:flex}
+.auth-form input,.auth-form select{width:100%;padding:12px;border:1px solid #2a4833;border-radius:9px;background:#0a160f;color:#effff4;outline:none}
+.auth-form input:focus,.auth-form select:focus{border-color:var(--green)}
+.auth-submit{padding:12px;border:0;border-radius:10px;background:var(--green);color:#06130b;font-weight:900;cursor:pointer}
+.auth-note{font-size:11px;color:#91a99a;line-height:1.8}
+.auth-status{display:none;padding:10px 12px;border-radius:9px;background:#10291a;border:1px solid #39f58a55;color:#caffd9;font-size:12px;line-height:1.8;margin:10px 0}
+.auth-status.error{background:#301515;border-color:#a94a4a;color:#ffd1d1}
+.auth-link{background:none;border:0;color:var(--green2);text-decoration:underline;cursor:pointer;padding:5px;font-size:12px}
+.account-chip{display:none;align-items:center;gap:9px;color:var(--green2);font-size:12px}
+.account-chip button{border:1px solid #31553d;background:#102619;color:#caffd9;padding:8px 10px;border-radius:8px;cursor:pointer}
+@media(max-width:480px){.auth-box{padding:19px}.auth-box h2{font-size:21px}}
+
+
+/* Members-only content and terminal transition */
+#fields,#about{display:none}
+body.members-mode #fields,body.members-mode #about{display:block}
+.terminal-transition{position:fixed;inset:0;z-index:100;background:#020805;display:none;align-items:center;justify-content:center;overflow:hidden;padding:22px}
+.terminal-transition.show{display:flex}
+.terminal-transition:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 3px,#39f58a0b 4px 5px);pointer-events:none}
+.matrix-rain{position:absolute;inset:-30%;opacity:.22;color:#39f58a;font:12px/1.7 Consolas,monospace;letter-spacing:5px;white-space:pre-wrap;word-break:break-all;animation:matrixDrift 5s linear infinite}
+.terminal-transition-box{position:relative;z-index:2;width:min(680px,100%);border:1px solid #39f58a88;background:#06120bdf;box-shadow:0 0 55px #39f58a22;border-radius:16px;padding:24px}
+.terminal-transition-title{color:#a0ffc2;font:700 13px Consolas,monospace;direction:ltr;text-align:left;letter-spacing:1px;margin-bottom:18px}
+.terminal-output{min-height:150px;color:#39f58a;font:13px/2 Consolas,monospace;direction:ltr;text-align:left;white-space:pre-wrap;overflow-wrap:anywhere}
+.terminal-progress{height:5px;background:#14271b;border-radius:9px;overflow:hidden;margin-top:17px}
+.terminal-progress i{display:block;height:100%;width:0;background:#39f58a;box-shadow:0 0 14px #39f58a;animation:terminalLoad 2.4s ease forwards}
+.terminal-status{color:#a0ffc2;font:11px Consolas,monospace;direction:ltr;text-align:left;margin-top:11px}
+@keyframes matrixDrift{from{transform:translateY(-5%)}to{transform:translateY(5%)}}
+@keyframes terminalLoad{to{width:100%}}
+@media(prefers-reduced-motion:reduce){.matrix-rain,.terminal-progress i{animation-duration:.01ms!important}}
+
+
+/* Live server health / network pulse */
+.server-health{display:flex;align-items:center;gap:12px;padding:12px;margin:12px 0 14px;border:1px solid #285237;border-radius:13px;background:linear-gradient(110deg,#0c2115,#09140e);position:relative;overflow:hidden}
+.server-health:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(100deg,transparent,#39f58a0d,transparent);transform:translateX(-100%);animation:healthSweep 3.5s ease-in-out infinite}
+.health-globe{width:42px;height:42px;flex:0 0 42px;border:1px solid #39f58a88;border-radius:50%;display:grid;place-items:center;color:#39f58a;font-size:22px;box-shadow:0 0 18px #39f58a20;position:relative}
+.health-globe:before,.health-globe:after{content:"";position:absolute;inset:5px;border:1px dashed #39f58a77;border-radius:50%;animation:healthSpin 8s linear infinite}
+.health-globe:after{inset:11px;border-style:solid;animation-direction:reverse;animation-duration:5s}
+.health-copy{min-width:0;flex:1;position:relative;z-index:1}
+.health-title{font-size:12px;color:#d9ffe5;font-weight:900}
+.health-detail{font-size:10px;color:#91a99a;line-height:1.7;margin-top:3px;overflow-wrap:anywhere}
+.health-state{font-size:10px;font-weight:900;color:#a0ffc2;margin-top:3px}
+.health-state.good{color:#39f58a}.health-state.slow{color:#ffd27a}.health-state.bad{color:#ff8c8c}
+.health-refresh{border:1px solid #31553d;background:#102619;color:#baffce;border-radius:8px;padding:7px 9px;font-size:10px;cursor:pointer;position:relative;z-index:1}
+.health-refresh:disabled{opacity:.5;cursor:wait}
+@keyframes healthSpin{to{transform:rotate(360deg)}}
+@keyframes healthSweep{50%,100%{transform:translateX(100%)}}
+@media(prefers-reduced-motion:reduce){.health-globe:before,.health-globe:after,.server-health:after{animation:none}}
+
+
+/* Red cyber guardian eyes — auth panel */
+.guardian-eyes{position:relative;width:min(290px,82%);height:112px;margin:8px auto 16px;display:flex;align-items:center;justify-content:center;gap:22px;filter:drop-shadow(0 0 12px #ff102b66);touch-action:pan-y}
+.guardian-eye{position:relative;width:112px;height:66px;overflow:hidden;background:linear-gradient(180deg,#180509,#050507 65%);border:2px solid #a90e25;clip-path:polygon(0 18%,18% 0,82% 0,100% 18%,88% 78%,50% 100%,12% 78%);box-shadow:inset 0 0 18px #ff173b55,0 0 14px #ff102b66}
+.guardian-eye:before{content:"";position:absolute;inset:5px 8px;border:1px solid #ff304a66;clip-path:polygon(0 18%,18% 0,82% 0,100% 18%,88% 78%,50% 100%,12% 78%);pointer-events:none}
+.guardian-iris{position:absolute;left:50%;top:50%;width:39px;height:39px;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,#fff 0 5%,#ffb5bf 7% 12%,#ff173b 18% 42%,#8c001c 57%,#170008 72%);box-shadow:0 0 9px #ff173b,0 0 23px #ff102b;transition:transform .09s linear}
+.guardian-iris:before{content:"";position:absolute;inset:9px;border-radius:50%;background:radial-gradient(circle,#080308 0 48%,#3c0010 52% 70%,transparent 72%)}
+.guardian-iris:after{content:"";position:absolute;inset:-7px;border:1px dashed #ff5368;border-radius:50%;animation:irisOrbit 5s linear infinite}
+.guardian-brow{position:absolute;top:8px;width:118px;height:15px;border-top:5px solid #ff173b;filter:drop-shadow(0 0 5px #ff173b)}
+.guardian-brow.left{right:calc(50% + 8px);transform:rotate(8deg)}.guardian-brow.right{left:calc(50% + 8px);transform:rotate(-8deg)}
+.guardian-caption{text-align:center;color:#ff5268;font:700 9px/1.5 Consolas,monospace;letter-spacing:2px;text-shadow:0 0 9px #ff173b;margin-top:-5px}
+@keyframes irisOrbit{to{transform:rotate(360deg)}}
+@media(max-width:380px){.guardian-eyes{gap:13px;height:98px}.guardian-eye{width:100px;height:59px}.guardian-brow{width:105px}}
+
+
+.pwa-install-btn{border:1px solid #39f58a88;background:#102619;color:#a0ffc2;padding:10px 13px;border-radius:10px;cursor:pointer;font-weight:bold;font-size:12px}
+.pwa-install-btn[hidden]{display:none}
+@media(max-width:650px){.nav{height:auto;min-height:76px;flex-wrap:wrap;padding:12px 0}.pwa-install-btn{order:4;width:100%}}
 </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// Supabase Authentication — بيانات المشروع العامة (Publishable Key فقط)
+const SUPABASE_URL = 'https://hhuzstmkjzhzxwgjkoog.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_xL8bWlKPSbjke9rsJGW41Q_HohfC5ed';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+function authStatus(message, isError=false){
+  const el=document.getElementById('authStatus');
+  el.textContent=message;
+  el.classList.toggle('error',isError);
+  el.style.display='block';
+}
+function clearAuthStatus(){
+  const el=document.getElementById('authStatus');
+  el.textContent=''; el.style.display='none'; el.classList.remove('error');
+}
+function openAuth(mode='signup'){
+  document.getElementById('authOverlay').classList.add('show');
+  switchAuth(mode);
+  checkServerHealth();
+}
+function closeAuth(){document.getElementById('authOverlay').classList.remove('show')}
+function switchAuth(mode){
+  clearAuthStatus();
+  document.getElementById('authTabs').style.display=mode==='forgot'||mode==='reset'?'none':'flex';
+  ['signup','login','forgot','reset'].forEach(x=>{
+    document.getElementById(x+'Form').classList.toggle('active',x===mode);
+  });
+  document.getElementById('tabSignup').classList.toggle('active',mode==='signup');
+  document.getElementById('tabLogin').classList.toggle('active',mode==='login');
+  document.getElementById('authTitle').textContent=
+    mode==='signup'?'إنشاء حساب جديد':mode==='login'?'تسجيل الدخول':mode==='forgot'?'استعادة كلمة المرور':'تغيير كلمة المرور';
+}
+
+let healthCheckRunning=false;
+async function checkServerHealth(){
+  if(healthCheckRunning) return;
+  healthCheckRunning=true;
+  const state=document.getElementById('healthState');
+  const detail=document.getElementById('healthDetail');
+  const refresh=document.getElementById('healthRefresh');
+  state.className='health-state';
+  state.textContent='● جاري فحص الاتصال';
+  detail.textContent='يتم اختبار الوصول إلى خادم المصادقة...';
+  refresh.disabled=true;
+  const started=performance.now();
+  const controller=new AbortController();
+  const timeout=setTimeout(()=>controller.abort(),7000);
+  try{
+    const response=await fetch(SUPABASE_URL+'/auth/v1/health',{
+      method:'GET',
+      headers:{'apikey':SUPABASE_PUBLISHABLE_KEY},
+      cache:'no-store',
+      signal:controller.signal
+    });
+    const elapsed=Math.round(performance.now()-started);
+    if(!response.ok) throw new Error('HTTP '+response.status);
+    if(elapsed<700){
+      state.className='health-state good';
+      state.textContent='● الخادم متصل — الحالة ممتازة';
+    }else if(elapsed<1600){
+      state.className='health-state slow';
+      state.textContent='● الخادم متصل — الاستجابة متوسطة';
+    }else{
+      state.className='health-state slow';
+      state.textContent='● الخادم متصل — الاستجابة بطيئة';
+    }
+    detail.textContent='زمن استجابة خادم التسجيل: '+elapsed+' ms · تم فحص الاتصال فعليًا';
+  }catch(err){
+    state.className='health-state bad';
+    state.textContent='● تعذّر تأكيد الاتصال بالخادم';
+    detail.textContent=err.name==='AbortError'
+      ?'انتهت مهلة الفحص بعد 7 ثوانٍ. تحقق من الإنترنت وحاول مجددًا.'
+      :'لم ينجح فحص خادم المصادقة. قد يكون الاتصال أو إعدادات المشروع غير متاحة حاليًا.';
+  }finally{
+    clearTimeout(timeout);
+    refresh.disabled=false;
+    healthCheckRunning=false;
+  }
+}
+
+
+function readableAuthError(error){
+  const m=(error&&error.message)||'حدث خطأ غير متوقع.';
+  if(/invalid login credentials/i.test(m)) return 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+  if(/email not confirmed/i.test(m)) return 'أكد بريدك الإلكتروني من الرسالة التي وصلتك أولاً.';
+  if(/user already registered/i.test(m)) return 'هذا البريد مسجل بالفعل. جرّب تسجيل الدخول.';
+  if(/password should be at least/i.test(m)) return 'كلمة المرور يجب أن تكون 8 أحرف على الأقل.';
+  return m;
+}
+async function handleSignup(e){
+  e.preventDefault(); clearAuthStatus();
+  const name=document.getElementById('signupName').value.trim();
+  const phone=document.getElementById('signupPhone').value.trim();
+  const age=document.getElementById('signupAge').value;
+  const email=document.getElementById('signupEmail').value.trim();
+  const password=document.getElementById('signupPassword').value;
+  const confirm=document.getElementById('signupConfirm').value;
+  if(password!==confirm){authStatus('كلمتا المرور غير متطابقتين.',true);return;}
+  const btn=document.getElementById('signupSubmit'); btn.disabled=true; btn.textContent='جارٍ إنشاء الحساب...';
+  document.getElementById('healthState').className='health-state';
+  document.getElementById('healthState').textContent='● جاري التواصل مع خادم التسجيل';
+  document.getElementById('healthDetail').textContent='يتم إرسال طلب إنشاء الحساب بأمان إلى Supabase...';
+  try{
+    const {data,error}=await supabaseClient.auth.signUp({
+      email,password,
+      options:{data:{full_name:name,phone:phone||null,age_range:age}}
+    });
+    if(error) throw error;
+    document.getElementById('healthState').className='health-state good';
+    document.getElementById('healthState').textContent='● تم قبول طلب التسجيل';
+    document.getElementById('healthDetail').textContent='استجاب خادم التسجيل بنجاح.';
+    if(data.session){
+      closeAuth();
+      await refreshAccountUI(data.user);
+      enterMembersMode('ACCOUNT CREATED');
+    }else{
+      authStatus('تم إرسال رسالة تأكيد إلى بريدك الإلكتروني. افتح الرسالة وأكد الحساب، ثم سجّل الدخول.');
+    }
+  }catch(err){authStatus(readableAuthError(err),true);}
+  finally{btn.disabled=false;btn.textContent='إنشاء الحساب';}
+}
+async function handleLogin(e){
+  e.preventDefault(); clearAuthStatus();
+  const email=document.getElementById('loginEmail').value.trim();
+  const password=document.getElementById('loginPassword').value;
+  const btn=document.getElementById('loginSubmit'); btn.disabled=true; btn.textContent='جارٍ التحقق...';
+  document.getElementById('healthState').className='health-state';
+  document.getElementById('healthState').textContent='● جاري التحقق من بيانات الدخول';
+  document.getElementById('healthDetail').textContent='يتم الاتصال بخادم المصادقة...';
+  try{
+    const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+    if(error) throw error;
+    document.getElementById('healthState').className='health-state good';
+    document.getElementById('healthState').textContent='● تم التحقق بنجاح';
+    document.getElementById('healthDetail').textContent='خادم المصادقة قبل بيانات الدخول.';
+    closeAuth();
+    await refreshAccountUI(data.user);
+    enterMembersMode('ACCESS GRANTED');
+  }catch(err){authStatus(readableAuthError(err),true);}
+  finally{btn.disabled=false;btn.textContent='دخول';}
+}
+async function handleForgot(e){
+  e.preventDefault(); clearAuthStatus();
+  const email=document.getElementById('forgotEmail').value.trim();
+  try{
+    const redirectTo=window.location.origin+window.location.pathname;
+    const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo});
+    if(error) throw error;
+    authStatus('لو البريد مرتبط بحساب، هتوصلك رسالة فيها رابط استعادة كلمة المرور. راجع صندوق الوارد والرسائل غير المرغوب فيها.');
+  }catch(err){authStatus(readableAuthError(err),true);}
+}
+async function handlePasswordReset(e){
+  e.preventDefault(); clearAuthStatus();
+  const password=document.getElementById('newPassword').value;
+  const confirm=document.getElementById('newPasswordConfirm').value;
+  if(password!==confirm){authStatus('كلمتا المرور غير متطابقتين.',true);return;}
+  try{
+    const {error}=await supabaseClient.auth.updateUser({password});
+    if(error) throw error;
+    authStatus('تم تحديث كلمة المرور. يمكنك تسجيل الدخول الآن.');
+    setTimeout(()=>switchAuth('login'),1600);
+  }catch(err){authStatus(readableAuthError(err),true);}
+}
+async function refreshAccountUI(user){
+  const chip=document.getElementById('accountChip');
+  const btn=document.getElementById('accountButton');
+  if(user){
+    chip.style.display='flex'; btn.style.display='none';
+    document.getElementById('accountLabel').textContent=user.email||'حسابي';
+  }else{
+    chip.style.display='none'; btn.style.display='inline-block';
+  }
+}
+async function signOutUser(){
+  const {error}=await supabaseClient.auth.signOut();
+  if(error){alert(readableAuthError(error));return;}
+  await refreshAccountUI(null);
+  leaveMembersMode();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+const terminalLines = [
+  '> SAIF CYBER SECURE GATEWAY',
+  '> VERIFYING USER SESSION ... [OK]',
+  '> 01001000 01000001 01000011 01001011',
+  '> ENCRYPTED CHANNEL .......... [OK]',
+  '> LOADING LEARNING MODULES ... [OK]',
+  '> ACCESS LEVEL: MEMBER',
+  '> WELCOME TO THE SYSTEM_'
+];
+function makeMatrixNoise(){
+  const chars='0101010101#$%&*<>[]{};:/\\|';
+  let s='';
+  for(let i=0;i<850;i++) s+=chars[Math.floor(Math.random()*chars.length)] + (i%42===41?'\\n':' ');
+  return s;
+}
+function enterMembersMode(label='ACCESS GRANTED'){
+  const overlay=document.getElementById('terminalTransition');
+  const output=document.getElementById('terminalOutput');
+  const status=document.getElementById('terminalStatus');
+  document.body.classList.remove('members-mode');
+  overlay.classList.add('show');
+  overlay.setAttribute('aria-hidden','false');
+  document.getElementById('matrixRain').textContent=makeMatrixNoise();
+  output.textContent='';
+  let line=0;
+  const reveal=()=>{
+    if(line<terminalLines.length){
+      output.textContent += (line? '\\n':'') + terminalLines[line];
+      line++;
+      setTimeout(reveal,260);
+    }else{
+      status.textContent=label+' — REDIRECTING TO MEMBER AREA...';
+      setTimeout(()=>{
+        document.body.classList.add('members-mode');
+        overlay.classList.remove('show');
+        overlay.setAttribute('aria-hidden','true');
+        document.getElementById('fields').scrollIntoView({behavior:'smooth',block:'start'});
+      },650);
+    }
+  };
+  reveal();
+}
+function leaveMembersMode(){
+  document.body.classList.remove('members-mode');
+  document.getElementById('fields').style.display='';
+  document.getElementById('about').style.display='';
+}
+
+supabaseClient.auth.onAuthStateChange((event,session)=>{
+  if(session?.user) {
+    refreshAccountUI(session.user);
+    document.body.classList.add('members-mode');
+  } else {
+    refreshAccountUI(null);
+    leaveMembersMode();
+  }
+  if(event==='PASSWORD_RECOVERY'){
+    openAuth('reset');
+  }
+});
+(async()=>{
+  const {data}=await supabaseClient.auth.getSession();
+  await refreshAccountUI(data.session?.user||null);
+  if(data.session?.user){
+    document.body.classList.add('members-mode');
+  }else{
+    document.body.classList.remove('members-mode');
+  }
+})();
+document.getElementById('authOverlay').addEventListener('click',e=>{
+  if(e.target.id==='authOverlay') closeAuth();
+});
+
+</script>
 </head>
 <body>
 <header><div class="wrap nav">
 <a class="brand" href="#"><span class="logo">⌘</span><span>SAIF CYBER<small>ETHICAL HACKING & SECURITY</small></span></a>
 <nav class="navlinks"><a href="#home">الرئيسية</a><a href="#fields">المجالات</a><a href="#about">عن المنصة</a></nav>
-<button class="navbtn" onclick="alert('سيتم تفعيل إنشاء الحساب وتسجيل الدخول في المرحلة التالية.')">إنشاء حساب</button>
+<div class="account-chip" id="accountChip"><span id="accountLabel"></span><button type="button" onclick="signOutUser()">خروج</button></div><button class="navbtn" id="accountButton" onclick="openAuth('signup')">إنشاء حساب / دخول</button><button class="pwa-install-btn" id="pwaInstallButton" type="button" hidden>تثبيت التطبيق</button>
 </div></header>
 <main id="home" class="wrap">
 <section class="hero">
@@ -97,6 +440,81 @@ footer{border-top:1px solid #1b3324;margin-top:50px;padding:25px 0;color:#81988a
 </div>
 </section>
 </main>
+
+
+<div class="terminal-transition" id="terminalTransition" aria-hidden="true">
+  <div class="matrix-rain" id="matrixRain"></div>
+  <div class="terminal-transition-box">
+    <div class="terminal-transition-title">SAIF_CYBER://SECURE_ACCESS</div>
+    <div class="terminal-output" id="terminalOutput"></div>
+    <div class="terminal-progress"><i></i></div>
+    <div class="terminal-status" id="terminalStatus">INITIALIZING SECURE SESSION...</div>
+  </div>
+</div>
+
+<div class="auth-overlay" id="authOverlay" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <div class="auth-box">
+    <button class="auth-close" type="button" aria-label="إغلاق" onclick="closeAuth()">×</button>
+    <h2 id="authTitle">حساب SAIF CYBER</h2>
+    <p class="auth-sub">أنشئ حسابك لمتابعة رحلتك التعليمية. استخدم بريدك الإلكتروني الحقيقي لاستعادة كلمة المرور.</p>
+
+<div class="server-health" id="serverHealth" aria-live="polite">
+  <div class="health-globe" aria-hidden="true">◎</div>
+  <div class="health-copy">
+    <div class="health-title">SAIF CYBER NETWORK MONITOR</div>
+    <div class="health-detail" id="healthDetail">فحص اتصال المنصة بخادم التسجيل...</div>
+    <div class="health-state" id="healthState">● جاري الفحص</div>
+  </div>
+  <button class="health-refresh" id="healthRefresh" type="button" onclick="checkServerHealth()">فحص الآن</button>
+</div>
+
+    <div class="auth-status" id="authStatus" role="status"></div>
+    <div class="auth-tabs" id="authTabs">
+      <button type="button" id="tabSignup" class="active" onclick="switchAuth('signup')">إنشاء حساب</button>
+      <button type="button" id="tabLogin" onclick="switchAuth('login')">تسجيل الدخول</button>
+    </div>
+    <form class="auth-form active" id="signupForm" onsubmit="handleSignup(event)">
+      <input id="signupName" type="text" autocomplete="name" placeholder="الاسم الكامل" required maxlength="100">
+      <input id="signupPhone" type="tel" autocomplete="tel" placeholder="رقم الهاتف (اختياري)">
+      <select id="signupAge" required>
+        <option value="">الفئة العمرية</option>
+        <option value="13-15">13 إلى 15 سنة</option>
+        <option value="16-17">16 إلى 17 سنة</option>
+        <option value="18+">18 سنة أو أكثر</option>
+      </select>
+      <input id="signupEmail" type="email" autocomplete="email" placeholder="البريد الإلكتروني" required>
+      <input id="signupPassword" type="password" autocomplete="new-password" placeholder="كلمة المرور (8 أحرف على الأقل)" minlength="8" required>
+      <input id="signupConfirm" type="password" autocomplete="new-password" placeholder="تأكيد كلمة المرور" minlength="8" required>
+      <button class="auth-submit" type="submit" id="signupSubmit">إنشاء الحساب</button>
+      <p class="auth-note">بياناتك تُستخدم لتشغيل حسابك فقط. لا تشارك كلمة مرورك مع أي شخص. رقم الهاتف اختياري.</p>
+    </form>
+    <form class="auth-form" id="loginForm" onsubmit="handleLogin(event)">
+      <input id="loginEmail" type="email" autocomplete="email" placeholder="البريد الإلكتروني" required>
+      <input id="loginPassword" type="password" autocomplete="current-password" placeholder="كلمة المرور" required>
+      <button class="auth-submit" type="submit" id="loginSubmit">دخول</button>
+      <button class="auth-link" type="button" onclick="switchAuth('forgot')">نسيت كلمة المرور؟</button>
+    </form>
+    <form class="auth-form" id="forgotForm" onsubmit="handleForgot(event)">
+      <p class="auth-sub">اكتب بريدك الإلكتروني وسنرسل لك رابط استعادة كلمة المرور إذا كان الحساب موجودًا.</p>
+      <input id="forgotEmail" type="email" autocomplete="email" placeholder="البريد الإلكتروني" required>
+      <button class="auth-submit" type="submit">إرسال رابط الاستعادة</button>
+      <button class="auth-link" type="button" onclick="switchAuth('login')">العودة لتسجيل الدخول</button>
+    </form>
+    <form class="auth-form" id="resetForm" onsubmit="handlePasswordReset(event)">
+      <input id="newPassword" type="password" autocomplete="new-password" placeholder="كلمة المرور الجديدة (8 أحرف على الأقل)" minlength="8" required>
+      <input id="newPasswordConfirm" type="password" autocomplete="new-password" placeholder="تأكيد كلمة المرور الجديدة" minlength="8" required>
+      <button class="auth-submit" type="submit">حفظ كلمة المرور الجديدة</button>
+    </form>
+
+    <div class="guardian-eyes" id="guardianEyes" aria-label="عينان تقنيتان ثابتتان">
+      <div class="guardian-brow left"></div><div class="guardian-brow right"></div>
+      <div class="guardian-eye"><div class="guardian-iris"></div></div>
+      <div class="guardian-eye"><div class="guardian-iris"></div></div>
+    </div>
+    <div class="guardian-caption">SAIF CYBER // VISUAL GUARDIAN</div>
+  </div>
+</div>
+
 <footer><div class="wrap foot"><span>© 2026 SAIF CYBER — جميع الحقوق محفوظة</span><span>Built for learning • Designed for security</span></div></footer>
 <button class="bot-launch" aria-label="افتح مساعد SEIF AL" title="اسأل SEIF AL" onclick="toggleBot()">
   <span class="robot-character" aria-hidden="true">
@@ -136,5 +554,293 @@ function seifGreet(){
 }
 setTimeout(seifGreet,1800);
 setInterval(seifGreet,14000);
+
+// Supabase Authentication — بيانات المشروع العامة (Publishable Key فقط)
+const SUPABASE_URL = 'https://hhuzstmkjzhzxwgjkoog.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_xL8bWlKPSbjke9rsJGW41Q_HohfC5ed';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+function authStatus(message, isError=false){
+  const el=document.getElementById('authStatus');
+  el.textContent=message;
+  el.classList.toggle('error',isError);
+  el.style.display='block';
+}
+function clearAuthStatus(){
+  const el=document.getElementById('authStatus');
+  el.textContent=''; el.style.display='none'; el.classList.remove('error');
+}
+function openAuth(mode='signup'){
+  document.getElementById('authOverlay').classList.add('show');
+  switchAuth(mode);
+  checkServerHealth();
+}
+function closeAuth(){document.getElementById('authOverlay').classList.remove('show')}
+function switchAuth(mode){
+  clearAuthStatus();
+  document.getElementById('authTabs').style.display=mode==='forgot'||mode==='reset'?'none':'flex';
+  ['signup','login','forgot','reset'].forEach(x=>{
+    document.getElementById(x+'Form').classList.toggle('active',x===mode);
+  });
+  document.getElementById('tabSignup').classList.toggle('active',mode==='signup');
+  document.getElementById('tabLogin').classList.toggle('active',mode==='login');
+  document.getElementById('authTitle').textContent=
+    mode==='signup'?'إنشاء حساب جديد':mode==='login'?'تسجيل الدخول':mode==='forgot'?'استعادة كلمة المرور':'تغيير كلمة المرور';
+}
+
+let healthCheckRunning=false;
+async function checkServerHealth(){
+  if(healthCheckRunning) return;
+  healthCheckRunning=true;
+  const state=document.getElementById('healthState');
+  const detail=document.getElementById('healthDetail');
+  const refresh=document.getElementById('healthRefresh');
+  state.className='health-state';
+  state.textContent='● جاري فحص الاتصال';
+  detail.textContent='يتم اختبار الوصول إلى خادم المصادقة...';
+  refresh.disabled=true;
+  const started=performance.now();
+  const controller=new AbortController();
+  const timeout=setTimeout(()=>controller.abort(),7000);
+  try{
+    const response=await fetch(SUPABASE_URL+'/auth/v1/health',{
+      method:'GET',
+      headers:{'apikey':SUPABASE_PUBLISHABLE_KEY},
+      cache:'no-store',
+      signal:controller.signal
+    });
+    const elapsed=Math.round(performance.now()-started);
+    if(!response.ok) throw new Error('HTTP '+response.status);
+    if(elapsed<700){
+      state.className='health-state good';
+      state.textContent='● الخادم متصل — الحالة ممتازة';
+    }else if(elapsed<1600){
+      state.className='health-state slow';
+      state.textContent='● الخادم متصل — الاستجابة متوسطة';
+    }else{
+      state.className='health-state slow';
+      state.textContent='● الخادم متصل — الاستجابة بطيئة';
+    }
+    detail.textContent='زمن استجابة خادم التسجيل: '+elapsed+' ms · تم فحص الاتصال فعليًا';
+  }catch(err){
+    state.className='health-state bad';
+    state.textContent='● تعذّر تأكيد الاتصال بالخادم';
+    detail.textContent=err.name==='AbortError'
+      ?'انتهت مهلة الفحص بعد 7 ثوانٍ. تحقق من الإنترنت وحاول مجددًا.'
+      :'لم ينجح فحص خادم المصادقة. قد يكون الاتصال أو إعدادات المشروع غير متاحة حاليًا.';
+  }finally{
+    clearTimeout(timeout);
+    refresh.disabled=false;
+    healthCheckRunning=false;
+  }
+}
+
+function readableAuthError(error){
+  const m=(error&&error.message)||'حدث خطأ غير متوقع.';
+  if(/invalid login credentials/i.test(m)) return 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+  if(/email not confirmed/i.test(m)) return 'أكد بريدك الإلكتروني من الرسالة التي وصلتك أولاً.';
+  if(/user already registered/i.test(m)) return 'هذا البريد مسجل بالفعل. جرّب تسجيل الدخول.';
+  if(/password should be at least/i.test(m)) return 'كلمة المرور يجب أن تكون 8 أحرف على الأقل.';
+  return m;
+}
+async function handleSignup(e){
+  e.preventDefault(); clearAuthStatus();
+  const name=document.getElementById('signupName').value.trim();
+  const phone=document.getElementById('signupPhone').value.trim();
+  const age=document.getElementById('signupAge').value;
+  const email=document.getElementById('signupEmail').value.trim();
+  const password=document.getElementById('signupPassword').value;
+  const confirm=document.getElementById('signupConfirm').value;
+  if(password!==confirm){authStatus('كلمتا المرور غير متطابقتين.',true);return;}
+  const btn=document.getElementById('signupSubmit'); btn.disabled=true; btn.textContent='جارٍ إنشاء الحساب...';
+  document.getElementById('healthState').className='health-state';
+  document.getElementById('healthState').textContent='● جاري التواصل مع خادم التسجيل';
+  document.getElementById('healthDetail').textContent='يتم إرسال طلب إنشاء الحساب بأمان إلى Supabase...';
+  try{
+    const {data,error}=await supabaseClient.auth.signUp({
+      email,password,
+      options:{data:{full_name:name,phone:phone||null,age_range:age}}
+    });
+    if(error) throw error;
+    if(data.session){
+      closeAuth();
+      await refreshAccountUI(data.user);
+      enterMembersMode('ACCOUNT CREATED');
+    }else{
+      authStatus('تم إرسال رسالة تأكيد إلى بريدك الإلكتروني. افتح الرسالة وأكد الحساب، ثم سجّل الدخول.');
+    }
+  }catch(err){authStatus(readableAuthError(err),true);}
+  finally{btn.disabled=false;btn.textContent='إنشاء الحساب';}
+}
+async function handleLogin(e){
+  e.preventDefault(); clearAuthStatus();
+  const email=document.getElementById('loginEmail').value.trim();
+  const password=document.getElementById('loginPassword').value;
+  const btn=document.getElementById('loginSubmit'); btn.disabled=true; btn.textContent='جارٍ التحقق...';
+  document.getElementById('healthState').className='health-state';
+  document.getElementById('healthState').textContent='● جاري التحقق من بيانات الدخول';
+  document.getElementById('healthDetail').textContent='يتم الاتصال بخادم المصادقة...';
+  try{
+    const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+    if(error) throw error;
+    document.getElementById('healthState').className='health-state good';
+    document.getElementById('healthState').textContent='● تم التحقق بنجاح';
+    document.getElementById('healthDetail').textContent='خادم المصادقة قبل بيانات الدخول.';
+    closeAuth();
+    await refreshAccountUI(data.user);
+    enterMembersMode('ACCESS GRANTED');
+  }catch(err){authStatus(readableAuthError(err),true);}
+  finally{btn.disabled=false;btn.textContent='دخول';}
+}
+async function handleForgot(e){
+  e.preventDefault(); clearAuthStatus();
+  const email=document.getElementById('forgotEmail').value.trim();
+  try{
+    const redirectTo=window.location.origin+window.location.pathname;
+    const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo});
+    if(error) throw error;
+    authStatus('لو البريد مرتبط بحساب، هتوصلك رسالة فيها رابط استعادة كلمة المرور. راجع صندوق الوارد والرسائل غير المرغوب فيها.');
+  }catch(err){authStatus(readableAuthError(err),true);}
+}
+async function handlePasswordReset(e){
+  e.preventDefault(); clearAuthStatus();
+  const password=document.getElementById('newPassword').value;
+  const confirm=document.getElementById('newPasswordConfirm').value;
+  if(password!==confirm){authStatus('كلمتا المرور غير متطابقتين.',true);return;}
+  try{
+    const {error}=await supabaseClient.auth.updateUser({password});
+    if(error) throw error;
+    authStatus('تم تحديث كلمة المرور. يمكنك تسجيل الدخول الآن.');
+    setTimeout(()=>switchAuth('login'),1600);
+  }catch(err){authStatus(readableAuthError(err),true);}
+}
+async function refreshAccountUI(user){
+  const chip=document.getElementById('accountChip');
+  const btn=document.getElementById('accountButton');
+  if(user){
+    chip.style.display='flex'; btn.style.display='none';
+    document.getElementById('accountLabel').textContent=user.email||'حسابي';
+  }else{
+    chip.style.display='none'; btn.style.display='inline-block';
+  }
+}
+async function signOutUser(){
+  const {error}=await supabaseClient.auth.signOut();
+  if(error){alert(readableAuthError(error));return;}
+  await refreshAccountUI(null);
+  leaveMembersMode();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+const terminalLines = [
+  '> SAIF CYBER SECURE GATEWAY',
+  '> VERIFYING USER SESSION ... [OK]',
+  '> 01001000 01000001 01000011 01001011',
+  '> ENCRYPTED CHANNEL .......... [OK]',
+  '> LOADING LEARNING MODULES ... [OK]',
+  '> ACCESS LEVEL: MEMBER',
+  '> WELCOME TO THE SYSTEM_'
+];
+function makeMatrixNoise(){
+  const chars='0101010101#$%&*<>[]{};:/\\|';
+  let s='';
+  for(let i=0;i<850;i++) s+=chars[Math.floor(Math.random()*chars.length)] + (i%42===41?'\\n':' ');
+  return s;
+}
+function enterMembersMode(label='ACCESS GRANTED'){
+  const overlay=document.getElementById('terminalTransition');
+  const output=document.getElementById('terminalOutput');
+  const status=document.getElementById('terminalStatus');
+  document.body.classList.remove('members-mode');
+  overlay.classList.add('show');
+  overlay.setAttribute('aria-hidden','false');
+  document.getElementById('matrixRain').textContent=makeMatrixNoise();
+  output.textContent='';
+  let line=0;
+  const reveal=()=>{
+    if(line<terminalLines.length){
+      output.textContent += (line? '\\n':'') + terminalLines[line];
+      line++;
+      setTimeout(reveal,260);
+    }else{
+      status.textContent=label+' — REDIRECTING TO MEMBER AREA...';
+      setTimeout(()=>{
+        document.body.classList.add('members-mode');
+        overlay.classList.remove('show');
+        overlay.setAttribute('aria-hidden','true');
+        document.getElementById('fields').scrollIntoView({behavior:'smooth',block:'start'});
+      },650);
+    }
+  };
+  reveal();
+}
+function leaveMembersMode(){
+  document.body.classList.remove('members-mode');
+  document.getElementById('fields').style.display='';
+  document.getElementById('about').style.display='';
+}
+
+supabaseClient.auth.onAuthStateChange((event,session)=>{
+  if(session?.user) {
+    refreshAccountUI(session.user);
+    document.body.classList.add('members-mode');
+  } else {
+    refreshAccountUI(null);
+    leaveMembersMode();
+  }
+  if(event==='PASSWORD_RECOVERY'){
+    openAuth('reset');
+  }
+});
+(async()=>{
+  const {data}=await supabaseClient.auth.getSession();
+  await refreshAccountUI(data.session?.user||null);
+  if(data.session?.user){
+    document.body.classList.add('members-mode');
+  }else{
+    document.body.classList.remove('members-mode');
+  }
+})();
+document.getElementById('authOverlay').addEventListener('click',e=>{
+  if(e.target.id==='authOverlay') closeAuth();
+});
+
 </script>
+
+<script>
+// SAIF CYBER PWA: install prompt and offline app-shell registration.
+let saifDeferredInstallPrompt = null;
+const saifInstallButton = document.getElementById('pwaInstallButton');
+
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault();
+  saifDeferredInstallPrompt = event;
+  if (saifInstallButton) saifInstallButton.hidden = false;
+});
+
+if (saifInstallButton) {
+  saifInstallButton.addEventListener('click', async () => {
+    if (!saifDeferredInstallPrompt) {
+      alert('لو زر التثبيت غير متاح، افتح قائمة المتصفح ⋮ ثم اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».');
+      return;
+    }
+    saifDeferredInstallPrompt.prompt();
+    await saifDeferredInstallPrompt.userChoice;
+    saifDeferredInstallPrompt = null;
+    saifInstallButton.hidden = true;
+  });
+}
+
+window.addEventListener('appinstalled', () => {
+  if (saifInstallButton) saifInstallButton.hidden = true;
+});
+
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js', { scope: './' })
+      .catch((error) => console.warn('SAIF CYBER offline setup:', error));
+  });
+}
+</script>
+
 </body></html>
