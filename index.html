@@ -144,264 +144,32 @@ body.members-mode #fields,body.members-mode #about{display:block}
 .pwa-install-btn{border:1px solid #39f58a88;background:#102619;color:#a0ffc2;padding:10px 13px;border-radius:10px;cursor:pointer;font-weight:bold;font-size:12px}
 .pwa-install-btn[hidden]{display:none}
 @media(max-width:650px){.nav{height:auto;min-height:76px;flex-wrap:wrap;padding:12px 0}.pwa-install-btn{order:4;width:100%}}
+
+/* SAIF CYBER learning dashboard */
+.academy-dashboard{display:none;padding:28px 0 55px}
+body.members-mode .academy-dashboard{display:block}
+.academy-top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+.academy-top h2{margin:0;color:var(--green2)}
+.academy-note{color:var(--muted);font-size:12px;line-height:1.8;margin-top:7px}
+.academy-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.academy-card,.lesson-row,.lesson-reader{background:linear-gradient(145deg,#102017,#0a130e);border:1px solid #1d3a28;border-radius:15px;padding:17px}
+.academy-card h3{margin:0 0 8px;font-size:16px}.academy-card p{color:#9fb2a5;font-size:12px;line-height:1.8;min-height:42px}
+.academy-btn,.lesson-nav button,.quiz-submit{border:1px solid #39f58a88;background:#102619;color:var(--green2);padding:10px 13px;border-radius:9px;cursor:pointer;font-weight:bold}
+.academy-btn:disabled,.lesson-nav button:disabled{opacity:.45;cursor:not-allowed}
+.academy-status{padding:12px;border:1px solid #285237;background:#0c2115;border-radius:10px;color:#baffce;font-size:12px;line-height:1.8;margin:14px 0}
+.lesson-list{display:grid;gap:9px;margin-top:14px}
+.lesson-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px}
+.lesson-row strong{font-size:13px}.lesson-row small{display:block;color:var(--muted);margin-top:5px;font-size:11px}
+.lesson-reader{margin-top:16px}.lesson-reader h3{color:var(--green2);margin-top:0}.page-content{white-space:pre-wrap;line-height:2;color:#d6e8dc;font-size:14px;overflow-wrap:anywhere}
+.lesson-nav{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px}
+.lesson-nav span{color:var(--muted);font-size:12px}
+.quiz-item{border-top:1px solid #25422e;padding:13px 0}.quiz-item p{line-height:1.8;font-size:13px}.quiz-item label{display:block;color:#c4d8ca;font-size:12px;padding:6px 0;cursor:pointer}
+.quiz-result{margin-top:12px;padding:12px;border-radius:10px;background:#10291a;color:#caffd9;font-size:13px;line-height:1.8}
+@media(max-width:600px){.lesson-row{align-items:flex-start;flex-direction:column}.academy-top h2{font-size:22px}}
+
 </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-// Supabase Authentication — بيانات المشروع العامة (Publishable Key فقط)
-const SUPABASE_URL = 'https://hhuzstmkjzhzxwgjkoog.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_xL8bWlKPSbjke9rsJGW41Q_HohfC5ed';
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-function authStatus(message, isError=false){
-  const el=document.getElementById('authStatus');
-  el.textContent=message;
-  el.classList.toggle('error',isError);
-  el.style.display='block';
-}
-function clearAuthStatus(){
-  const el=document.getElementById('authStatus');
-  el.textContent=''; el.style.display='none'; el.classList.remove('error');
-}
-function openAuth(mode='signup'){
-  document.getElementById('authOverlay').classList.add('show');
-  switchAuth(mode);
-  checkServerHealth();
-}
-function closeAuth(){document.getElementById('authOverlay').classList.remove('show')}
-function switchAuth(mode){
-  clearAuthStatus();
-  document.getElementById('authTabs').style.display=mode==='forgot'||mode==='reset'?'none':'flex';
-  ['signup','login','forgot','reset'].forEach(x=>{
-    document.getElementById(x+'Form').classList.toggle('active',x===mode);
-  });
-  document.getElementById('tabSignup').classList.toggle('active',mode==='signup');
-  document.getElementById('tabLogin').classList.toggle('active',mode==='login');
-  document.getElementById('authTitle').textContent=
-    mode==='signup'?'إنشاء حساب جديد':mode==='login'?'تسجيل الدخول':mode==='forgot'?'استعادة كلمة المرور':'تغيير كلمة المرور';
-}
-
-let healthCheckRunning=false;
-async function checkServerHealth(){
-  if(healthCheckRunning) return;
-  healthCheckRunning=true;
-  const state=document.getElementById('healthState');
-  const detail=document.getElementById('healthDetail');
-  const refresh=document.getElementById('healthRefresh');
-  state.className='health-state';
-  state.textContent='● جاري فحص الاتصال';
-  detail.textContent='يتم اختبار الوصول إلى خادم المصادقة...';
-  refresh.disabled=true;
-  const started=performance.now();
-  const controller=new AbortController();
-  const timeout=setTimeout(()=>controller.abort(),7000);
-  try{
-    const response=await fetch(SUPABASE_URL+'/auth/v1/health',{
-      method:'GET',
-      headers:{'apikey':SUPABASE_PUBLISHABLE_KEY},
-      cache:'no-store',
-      signal:controller.signal
-    });
-    const elapsed=Math.round(performance.now()-started);
-    if(!response.ok) throw new Error('HTTP '+response.status);
-    if(elapsed<700){
-      state.className='health-state good';
-      state.textContent='● الخادم متصل — الحالة ممتازة';
-    }else if(elapsed<1600){
-      state.className='health-state slow';
-      state.textContent='● الخادم متصل — الاستجابة متوسطة';
-    }else{
-      state.className='health-state slow';
-      state.textContent='● الخادم متصل — الاستجابة بطيئة';
-    }
-    detail.textContent='زمن استجابة خادم التسجيل: '+elapsed+' ms · تم فحص الاتصال فعليًا';
-  }catch(err){
-    state.className='health-state bad';
-    state.textContent='● تعذّر تأكيد الاتصال بالخادم';
-    detail.textContent=err.name==='AbortError'
-      ?'انتهت مهلة الفحص بعد 7 ثوانٍ. تحقق من الإنترنت وحاول مجددًا.'
-      :'لم ينجح فحص خادم المصادقة. قد يكون الاتصال أو إعدادات المشروع غير متاحة حاليًا.';
-  }finally{
-    clearTimeout(timeout);
-    refresh.disabled=false;
-    healthCheckRunning=false;
-  }
-}
-
-
-function readableAuthError(error){
-  const m=(error&&error.message)||'حدث خطأ غير متوقع.';
-  if(/invalid login credentials/i.test(m)) return 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
-  if(/email not confirmed/i.test(m)) return 'أكد بريدك الإلكتروني من الرسالة التي وصلتك أولاً.';
-  if(/user already registered/i.test(m)) return 'هذا البريد مسجل بالفعل. جرّب تسجيل الدخول.';
-  if(/password should be at least/i.test(m)) return 'كلمة المرور يجب أن تكون 8 أحرف على الأقل.';
-  return m;
-}
-async function handleSignup(e){
-  e.preventDefault(); clearAuthStatus();
-  const name=document.getElementById('signupName').value.trim();
-  const phone=document.getElementById('signupPhone').value.trim();
-  const age=document.getElementById('signupAge').value;
-  const email=document.getElementById('signupEmail').value.trim();
-  const password=document.getElementById('signupPassword').value;
-  const confirm=document.getElementById('signupConfirm').value;
-  if(password!==confirm){authStatus('كلمتا المرور غير متطابقتين.',true);return;}
-  const btn=document.getElementById('signupSubmit'); btn.disabled=true; btn.textContent='جارٍ إنشاء الحساب...';
-  document.getElementById('healthState').className='health-state';
-  document.getElementById('healthState').textContent='● جاري التواصل مع خادم التسجيل';
-  document.getElementById('healthDetail').textContent='يتم إرسال طلب إنشاء الحساب بأمان إلى Supabase...';
-  try{
-    const {data,error}=await supabaseClient.auth.signUp({
-      email,password,
-      options:{data:{full_name:name,phone:phone||null,age_range:age}}
-    });
-    if(error) throw error;
-    document.getElementById('healthState').className='health-state good';
-    document.getElementById('healthState').textContent='● تم قبول طلب التسجيل';
-    document.getElementById('healthDetail').textContent='استجاب خادم التسجيل بنجاح.';
-    if(data.session){
-      closeAuth();
-      await refreshAccountUI(data.user);
-      enterMembersMode('ACCOUNT CREATED');
-    }else{
-      authStatus('تم إرسال رسالة تأكيد إلى بريدك الإلكتروني. افتح الرسالة وأكد الحساب، ثم سجّل الدخول.');
-    }
-  }catch(err){authStatus(readableAuthError(err),true);}
-  finally{btn.disabled=false;btn.textContent='إنشاء الحساب';}
-}
-async function handleLogin(e){
-  e.preventDefault(); clearAuthStatus();
-  const email=document.getElementById('loginEmail').value.trim();
-  const password=document.getElementById('loginPassword').value;
-  const btn=document.getElementById('loginSubmit'); btn.disabled=true; btn.textContent='جارٍ التحقق...';
-  document.getElementById('healthState').className='health-state';
-  document.getElementById('healthState').textContent='● جاري التحقق من بيانات الدخول';
-  document.getElementById('healthDetail').textContent='يتم الاتصال بخادم المصادقة...';
-  try{
-    const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
-    if(error) throw error;
-    document.getElementById('healthState').className='health-state good';
-    document.getElementById('healthState').textContent='● تم التحقق بنجاح';
-    document.getElementById('healthDetail').textContent='خادم المصادقة قبل بيانات الدخول.';
-    closeAuth();
-    await refreshAccountUI(data.user);
-    enterMembersMode('ACCESS GRANTED');
-  }catch(err){authStatus(readableAuthError(err),true);}
-  finally{btn.disabled=false;btn.textContent='دخول';}
-}
-async function handleForgot(e){
-  e.preventDefault(); clearAuthStatus();
-  const email=document.getElementById('forgotEmail').value.trim();
-  try{
-    const redirectTo=window.location.origin+window.location.pathname;
-    const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo});
-    if(error) throw error;
-    authStatus('لو البريد مرتبط بحساب، هتوصلك رسالة فيها رابط استعادة كلمة المرور. راجع صندوق الوارد والرسائل غير المرغوب فيها.');
-  }catch(err){authStatus(readableAuthError(err),true);}
-}
-async function handlePasswordReset(e){
-  e.preventDefault(); clearAuthStatus();
-  const password=document.getElementById('newPassword').value;
-  const confirm=document.getElementById('newPasswordConfirm').value;
-  if(password!==confirm){authStatus('كلمتا المرور غير متطابقتين.',true);return;}
-  try{
-    const {error}=await supabaseClient.auth.updateUser({password});
-    if(error) throw error;
-    authStatus('تم تحديث كلمة المرور. يمكنك تسجيل الدخول الآن.');
-    setTimeout(()=>switchAuth('login'),1600);
-  }catch(err){authStatus(readableAuthError(err),true);}
-}
-async function refreshAccountUI(user){
-  const chip=document.getElementById('accountChip');
-  const btn=document.getElementById('accountButton');
-  if(user){
-    chip.style.display='flex'; btn.style.display='none';
-    document.getElementById('accountLabel').textContent=user.email||'حسابي';
-  }else{
-    chip.style.display='none'; btn.style.display='inline-block';
-  }
-}
-async function signOutUser(){
-  const {error}=await supabaseClient.auth.signOut();
-  if(error){alert(readableAuthError(error));return;}
-  await refreshAccountUI(null);
-  leaveMembersMode();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-const terminalLines = [
-  '> SAIF CYBER SECURE GATEWAY',
-  '> VERIFYING USER SESSION ... [OK]',
-  '> 01001000 01000001 01000011 01001011',
-  '> ENCRYPTED CHANNEL .......... [OK]',
-  '> LOADING LEARNING MODULES ... [OK]',
-  '> ACCESS LEVEL: MEMBER',
-  '> WELCOME TO THE SYSTEM_'
-];
-function makeMatrixNoise(){
-  const chars='0101010101#$%&*<>[]{};:/\\|';
-  let s='';
-  for(let i=0;i<850;i++) s+=chars[Math.floor(Math.random()*chars.length)] + (i%42===41?'\\n':' ');
-  return s;
-}
-function enterMembersMode(label='ACCESS GRANTED'){
-  const overlay=document.getElementById('terminalTransition');
-  const output=document.getElementById('terminalOutput');
-  const status=document.getElementById('terminalStatus');
-  document.body.classList.remove('members-mode');
-  overlay.classList.add('show');
-  overlay.setAttribute('aria-hidden','false');
-  document.getElementById('matrixRain').textContent=makeMatrixNoise();
-  output.textContent='';
-  let line=0;
-  const reveal=()=>{
-    if(line<terminalLines.length){
-      output.textContent += (line? '\\n':'') + terminalLines[line];
-      line++;
-      setTimeout(reveal,260);
-    }else{
-      status.textContent=label+' — REDIRECTING TO MEMBER AREA...';
-      setTimeout(()=>{
-        document.body.classList.add('members-mode');
-        overlay.classList.remove('show');
-        overlay.setAttribute('aria-hidden','true');
-        document.getElementById('fields').scrollIntoView({behavior:'smooth',block:'start'});
-      },650);
-    }
-  };
-  reveal();
-}
-function leaveMembersMode(){
-  document.body.classList.remove('members-mode');
-  document.getElementById('fields').style.display='';
-  document.getElementById('about').style.display='';
-}
-
-supabaseClient.auth.onAuthStateChange((event,session)=>{
-  if(session?.user) {
-    refreshAccountUI(session.user);
-    document.body.classList.add('members-mode');
-  } else {
-    refreshAccountUI(null);
-    leaveMembersMode();
-  }
-  if(event==='PASSWORD_RECOVERY'){
-    openAuth('reset');
-  }
-});
-(async()=>{
-  const {data}=await supabaseClient.auth.getSession();
-  await refreshAccountUI(data.session?.user||null);
-  if(data.session?.user){
-    document.body.classList.add('members-mode');
-  }else{
-    document.body.classList.remove('members-mode');
-  }
-})();
-document.getElementById('authOverlay').addEventListener('click',e=>{
-  if(e.target.id==='authOverlay') closeAuth();
-});
-
-</script>
 </head>
 <body>
 <header><div class="wrap nav">
@@ -441,6 +209,16 @@ document.getElementById('authOverlay').addEventListener('click',e=>{
 </section>
 </main>
 
+<section id="academyDashboard" class="academy-dashboard wrap" aria-live="polite">
+  <div class="academy-top">
+    <div><h2>منطقة التعلّم — SAIF CYBER</h2><div class="academy-note">الكورسات والدروس المنشورة فقط ستظهر هنا. الدروس التي ما زالت قيد المراجعة تظل مخفية عن الطلاب.</div></div>
+    <button class="academy-btn" type="button" onclick="loadAcademyDashboard()">تحديث المحتوى</button>
+  </div>
+  <div id="academyStatus" class="academy-status">جاري تحميل الكورسات...</div>
+  <div id="academyCourses" class="academy-grid"></div>
+  <div id="academyLessons"></div>
+  <div id="academyReader"></div>
+</section>
 
 <div class="terminal-transition" id="terminalTransition" aria-hidden="true">
   <div class="matrix-rain" id="matrixRain"></div>
@@ -768,7 +546,8 @@ function enterMembersMode(label='ACCESS GRANTED'){
         document.body.classList.add('members-mode');
         overlay.classList.remove('show');
         overlay.setAttribute('aria-hidden','true');
-        document.getElementById('fields').scrollIntoView({behavior:'smooth',block:'start'});
+        loadAcademyDashboard();
+        document.getElementById('academyDashboard').scrollIntoView({behavior:'smooth',block:'start'});
       },650);
     }
   };
@@ -784,6 +563,7 @@ supabaseClient.auth.onAuthStateChange((event,session)=>{
   if(session?.user) {
     refreshAccountUI(session.user);
     document.body.classList.add('members-mode');
+    loadAcademyDashboard();
   } else {
     refreshAccountUI(null);
     leaveMembersMode();
@@ -797,10 +577,129 @@ supabaseClient.auth.onAuthStateChange((event,session)=>{
   await refreshAccountUI(data.session?.user||null);
   if(data.session?.user){
     document.body.classList.add('members-mode');
+    loadAcademyDashboard();
   }else{
     document.body.classList.remove('members-mode');
   }
 })();
+
+// Academy UI: reads only records allowed by Supabase Row Level Security.
+let academyCoursesCache = [];
+let activeCourse = null;
+let activeLesson = null;
+let activePages = [];
+let activePageIndex = 0;
+function academyMessage(message, isError=false){
+  const el=document.getElementById('academyStatus');
+  if(!el) return;
+  el.textContent=message;
+  el.style.borderColor=isError?'#a94a4a':'#285237';
+  el.style.color=isError?'#ffd1d1':'#baffce';
+}
+function academyText(value){return String(value??'');}
+async function loadAcademyDashboard(){
+  const {data:{session}}=await supabaseClient.auth.getSession();
+  if(!session){academyMessage('سجّل الدخول أولاً لعرض منطقة التعلّم.',true);return;}
+  academyMessage('جاري تحميل الكورسات المنشورة...');
+  document.getElementById('academyCourses').innerHTML='';
+  document.getElementById('academyLessons').innerHTML='';
+  document.getElementById('academyReader').innerHTML='';
+  try{
+    const {data,error}=await supabaseClient.from('courses').select('*').order('title');
+    if(error) throw error;
+    academyCoursesCache=(data||[]).filter(c=>c.is_published===true);
+    if(!academyCoursesCache.length){
+      academyMessage('تم تسجيل الدخول بنجاح. لا توجد كورسات منشورة للطلاب حاليًا؛ الدروس قيد المراجعة تظل مخفية لحماية جودة المحتوى.');
+      return;
+    }
+    academyMessage('تم تحميل '+academyCoursesCache.length+' كورس منشور. اختر كورسًا لعرض دروسه.');
+    const grid=document.getElementById('academyCourses');
+    academyCoursesCache.forEach(course=>{
+      const card=document.createElement('article');card.className='academy-card';
+      const title=document.createElement('h3');title.textContent=academyText(course.title)||'كورس';
+      const desc=document.createElement('p');desc.textContent=academyText(course.description||course.summary||'مسار تعليمي من SAIF CYBER');
+      const count=document.createElement('p');count.textContent='عدد الدروس المخطط: '+academyText(course.total_lessons||0);
+      const btn=document.createElement('button');btn.className='academy-btn';btn.textContent='عرض الدروس';btn.onclick=()=>loadCourseLessons(course);
+      card.append(title,desc,count,btn);grid.appendChild(card);
+    });
+  }catch(err){console.error(err);academyMessage('تعذر تحميل الكورسات. راجع صلاحيات القراءة وسياسات RLS في Supabase. التفاصيل: '+academyText(err.message),true);}
+}
+async function loadCourseLessons(course){
+  activeCourse=course;activeLesson=null;activePages=[];
+  document.getElementById('academyReader').innerHTML='';
+  const host=document.getElementById('academyLessons');host.innerHTML='';
+  academyMessage('جاري تحميل دروس: '+academyText(course.title));
+  try{
+    const {data,error}=await supabaseClient.from('course_lessons').select('*').eq('course_id',course.id).eq('is_published',true).order('lesson_number');
+    if(error) throw error;
+    const lessons=data||[];
+    const heading=document.createElement('h3');heading.textContent='دروس كورس '+academyText(course.title);host.appendChild(heading);
+    if(!lessons.length){academyMessage('لا توجد دروس منشورة في هذا الكورس حتى الآن. الدرس الأول ما زال مسودة للمراجعة.');return;}
+    const list=document.createElement('div');list.className='lesson-list';
+    lessons.forEach(lesson=>{
+      const row=document.createElement('div');row.className='lesson-row';
+      const info=document.createElement('div');
+      const strong=document.createElement('strong');strong.textContent='الدرس '+lesson.lesson_number+': '+academyText(lesson.title);
+      const small=document.createElement('small');small.textContent=academyText(lesson.summary||'');info.append(strong,small);
+      const btn=document.createElement('button');btn.className='academy-btn';btn.textContent='ابدأ الدرس';btn.onclick=()=>openAcademyLesson(lesson);
+      row.append(info,btn);list.appendChild(row);
+    });
+    host.appendChild(list);academyMessage('تم تحميل '+lessons.length+' درس منشور.');
+  }catch(err){console.error(err);academyMessage('تعذر تحميل الدروس: '+academyText(err.message),true);}
+}
+async function openAcademyLesson(lesson){
+  activeLesson=lesson;activePageIndex=0;
+  academyMessage('جاري فتح الدرس وتحميل صفحاته...');
+  try{
+    const {data,error}=await supabaseClient.from('lesson_pages').select('*').eq('lesson_id',lesson.id).order('page_number');
+    if(error) throw error;
+    activePages=data||[];
+    if(!activePages.length){academyMessage('هذا الدرس منشور لكن لا توجد صفحات متاحة للقراءة. يرجى إبلاغ إدارة المنصة.',true);return;}
+    renderAcademyPage();
+    document.getElementById('academyReader').scrollIntoView({behavior:'smooth',block:'start'});
+    academyMessage('تم فتح الدرس. عدد الصفحات: '+activePages.length+'.');
+  }catch(err){console.error(err);academyMessage('تعذر تحميل صفحات الدرس: '+academyText(err.message),true);}
+}
+function renderAcademyPage(){
+  const host=document.getElementById('academyReader');host.innerHTML='';
+  const page=activePages[activePageIndex];if(!page)return;
+  const box=document.createElement('article');box.className='lesson-reader';
+  const title=document.createElement('h3');title.textContent=academyText(activeLesson.title);
+  const pageTitle=document.createElement('h4');pageTitle.textContent='صفحة '+page.page_number+' — '+academyText(page.page_title);
+  const content=document.createElement('div');content.className='page-content';content.textContent=academyText(page.page_content);
+  const nav=document.createElement('div');nav.className='lesson-nav';
+  const prev=document.createElement('button');prev.textContent='الصفحة السابقة';prev.disabled=activePageIndex===0;prev.onclick=()=>{activePageIndex--;renderAcademyPage();};
+  const indicator=document.createElement('span');indicator.textContent=(activePageIndex+1)+' من '+activePages.length;
+  const next=document.createElement('button');next.textContent=activePageIndex===activePages.length-1?'إنهاء الشرح والاختبار':'الصفحة التالية';next.onclick=()=>{if(activePageIndex<activePages.length-1){activePageIndex++;renderAcademyPage();}else renderAcademyQuiz(box);};
+  nav.append(prev,indicator,next);box.append(title,pageTitle,content,nav);host.appendChild(box);
+}
+function renderAcademyQuiz(previousBox){
+  const host=document.getElementById('academyReader');host.innerHTML='';
+  const box=document.createElement('article');box.className='lesson-reader';
+  const title=document.createElement('h3');title.textContent='اختبار: '+academyText(activeLesson.title);box.appendChild(title);
+  let quiz=activeLesson.quiz;
+  if(typeof quiz==='string'){try{quiz=JSON.parse(quiz);}catch(_){quiz=[];}}
+  if(!Array.isArray(quiz)||!quiz.length){const msg=document.createElement('p');msg.textContent='لا يوجد اختبار معتمد لهذا الدرس حتى الآن.';box.appendChild(msg);host.appendChild(box);return;}
+  quiz.forEach((q,i)=>{
+    const item=document.createElement('div');item.className='quiz-item';
+    const question=document.createElement('p');question.textContent=(i+1)+'. '+academyText(q.question);item.appendChild(question);
+    (q.options||[]).forEach((option,j)=>{
+      const label=document.createElement('label');const radio=document.createElement('input');radio.type='radio';radio.name='academy-q-'+i;radio.value=String(j);radio.style.marginLeft='8px';label.append(radio,document.createTextNode(academyText(option)));item.appendChild(label);
+    });box.appendChild(item);
+  });
+  const submit=document.createElement('button');submit.className='quiz-submit';submit.textContent='تصحيح الاختبار';
+  const result=document.createElement('div');result.className='quiz-result';result.hidden=true;
+  submit.onclick=()=>{
+    let score=0,answered=0;
+    quiz.forEach((q,i)=>{const chosen=box.querySelector('input[name="academy-q-'+i+'"]:checked');if(chosen){answered++;if(Number(chosen.value)===Number(q.correct))score++;}});
+    result.hidden=false;
+    if(answered!==quiz.length){result.textContent='جاوب على كل الأسئلة أولاً. أجبت عن '+answered+' من '+quiz.length+'.';return;}
+    const percent=Math.round(score/quiz.length*100);
+    result.textContent='نتيجتك: '+score+' من '+quiz.length+' ('+percent+'%). '+(percent>=80?'ممتاز! اجتزت الاختبار.':'راجع الشرح وحاول مرة أخرى. تحتاج إلى 80% للنجاح.');
+  };
+  box.append(submit,result);host.appendChild(box);
+}
+
 document.getElementById('authOverlay').addEventListener('click',e=>{
   if(e.target.id==='authOverlay') closeAuth();
 });

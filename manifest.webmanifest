@@ -1,42 +1,23 @@
 {
-  "id": "./",
-  "name": "SAIF CYBER — الأمن السيبراني",
+  "name": "SAIF CYBER",
   "short_name": "SAIF CYBER",
-  "description": "منصة SAIF CYBER لتعلّم الأمن السيبراني والهكر الأخلاقي بطريقة مسؤولة وآمنة.",
   "lang": "ar",
   "dir": "rtl",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "display_override": [
-    "standalone",
-    "minimal-ui"
-  ],
-  "orientation": "portrait",
   "background_color": "#070d0b",
   "theme_color": "#07110d",
-  "categories": [
-    "education",
-    "security"
-  ],
   "icons": [
     {
       "src": "./icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/png"
     },
     {
       "src": "./icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icons/icon-maskable-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "type": "image/png"
     }
   ]
 }
